@@ -170,5 +170,48 @@ level 19:
 This file is owned by user bandit20 and has an unusual permission: s instead of x in the user execute bit.
 The s indicates the setuid (Set User ID) permission.
 When a binary with setuid is executed, it runs with the privileges of its owner, not the user who launched it.
-So in this case: we need to do something to execute that file although we are bandit 19 user
+So in this case: 
+     + We need to do something to execute that file although we are bandit 19 user
+     + Executing bandit20-do causes the process to run with bandit20 privileges
+-> This allows bandit19 to execute commands as bandit20 without knowing the password, but only through the logic implemented in the binary.
 
+(viết tiếng anh khổ dell chịu dc :/)
++ pass: 0qXahG8ZjOVMN9Ghs7iOWsCfZyXOUbYO
+
+level 20: 
++ "ssh bandit20@bandit.labs.overthewire.org -p 2220"
+if you try to execute the suconnect file, you will receive this message:
+"  This program will connect to the given port on localhost using TCP.
+ If it receives the correct password from the other side, the next password is transmitted back."
+-> its mean you need to connect with port and using TCP
+First, i using nmap to show which ports are busy
+Then, I will create a server by using netcat (hint: nc -l -p port) (l is mean listen and p is port)
+and make it run in background. The suconnect file will connect to that server and send the bandit20 password to it
+
++ pass: EeoULMCra2q0dSkYj561DX7s1CpBuOBt
+
+level 21: 
++ "ssh bandit21@bandit.labs.overthewire.org -p 2220"
+In this task, you need to see what command is running in /etc/cron.d/
+-> cd to  /etc/cron.d/
+Then, when you ls this file, you will see a file name "cronjob_bandit22"
+cat it and you know that this file execute bash script everytime
+cat that .sh file and surprise, everytime this script execute, it save to "/tmp/t7O6lds9S0RqQh9aMcz6ShpAoZKF7fgv"
+=> just cat this file and you receive password
+
++ pass: tRae0UfB9v0UzbCdn9cY0gQnds9GF58Q
+
+level 22: 
++ "ssh bandit22@bandit.labs.overthewire.org -p 2220"
++ continue using the way we solve level 21, we go to the /etc/cron.d and cat the file cronjob_bandit23
++ now, cat the .sh file and this is what is it
+"
+#!/bin/bash
+
+myname=$(whoami)
+mytarget=$(echo I am user $myname | md5sum | cut -d ' ' -f 1)
+
+echo "Copying passwordfile /etc/bandit_pass/$myname to /tmp/$mytarget"
+
+cat /etc/bandit_pass/$myname > /tmp/$mytarget
+"
