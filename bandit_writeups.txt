@@ -1,0 +1,174 @@
+level 0 : 
++ "ssh bandit0@bandit.labs.overthewire.org -p 2220"
++ cat readme
+
++ pass: ZjLjTmM6FvvyRnrb2rfNWOZOTa6ip5If
+
+level 1 :
++ "ssh bandit1@bandit.labs.overthewire.org -p 2220"
++ ls -apls
++ cat ./- (- is name of directory)
+
++ pass: 263JGJPfgU6LtdEvgfWU1XP5yac29mFx
+
+level 2: 
++ "ssh bandit2@bandit.labs.overthewire.org -p 2220"
++ ls -apls(list all directory and)
++ to open file with space we use "\" within spaces
+--> cat ./--spaces\ in\ this\ filename--
+
++pass: MNk8KNH3Usiio41PRUEoDFPqfxLPlSmx
+
+level 3: 
++ "ssh bandit3@bandit.labs.overthewire.org -p 2220"
++ using cd command to change directory to "inhere" directory
++ using ls -a
++ file have password is ...Hiding-From-You and just using cat to show password
+--> cat ./...Hiding-From-You
+
++ pass: 2WmrDFRmJIq3IPxneAaMGhap0pFhF3NJ
+
+level 4: 
++ "ssh bandit4@bandit.labs.overthewire.org -p 2220"
++ file have password is in inhere directory so using cd command to goto inhere directory
++ After change dir from ~ to inhere, it have 10 file and there is only one file is readable and it is also password
+--> we can using these way to have password
+way 1: using bruteforce way by cat all file 
+way 2: using command find: "find -type f | xargs file" or "find . -type f -exec file {} +"
+
++ pass: 4oQYVPkxZOOEOO5pTW81FB8j8lxXGUQw
+
+level 5: 
++ "ssh bandit5@bandit.labs.overthewire.org -p 2220"
++ In this level, we have to find a file with these conditions: human-readable,1033 bytes in size,not executable
++ So we using find command and then adding these conditions to command 
+--> find . -type f ! -executable -readable -size 1033c
++ then when access to that directory that have a file with password using that command again and then cat it
+
++ pass: HWasnPhtq9AVKe0dmk45nxy20cvUa6EG
+
+level 6:
++ "ssh bandit6@bandit.labs.overthewire.org -p 2220"
++ like level 5, in this level we have to find a file with these conditions: 
+-owned by user bandit7
+-owned by group bandit6
+-33 bytes in size
+--> using command in level 5 but change . (present working directory) to / (root directory) 
++ file have password : /var/lib/dpkg/info/bandit7.password
+
++ pass: morbNTDkSW6jIlUc0ymOdMaLnOlFVAaj
+
+level 7:
++ "ssh bandit7@bandit.labs.overthewire.org -p 2220"
++ password in file data.txt but next to the word "millionth" 
+--> cat data file with grep command
+==> cat data.txt | grep "millionth"
+
++ pass:dfwvzFQi4mU0wfNbFOe9RoWskMLg7eEc
+
+level 8:
++ "ssh bandit8@bandit.labs.overthewire.org -p 2220"
++ In this level, we have to print a line occur only once 
+--> sort this file and then cat the unique line 
+==> sort data.txt | uniq -u 
+
+pass: 4CKMh1JI91bUIZZPXDqGanal4xvAg0JM
+
+level 9: 
++ "ssh bandit9@bandit.labs.overthewire.org -p 2220"
++ in this level we can't using cat command because of binary find so we using strings instead and then grep a string have '=' 
+==> strings data.txt | grep = 
+
++ pass: FGUW5ilLVJrxX9kMYMmlN4MgbpfMiqey
+
+level 10:
++ "ssh bandit10@bandit.labs.overthewire.org -p 2220"
++ In this level, password is encoded by base64 
+--> just strings it (not cat) and then decode (to decode base64, we using base64 -d command with d is mean decode)
+==> strings data.txt | base64 -d
+
++ pass: dtR173fZKb0RRsDFSGsg2RWnpNVj3qRr
+
+level 11: 
++ "ssh bandit11@bandit.labs.overthewire.org -p 2220"
++  Like the previous level, password has been encoded by ROT13 so we need to decode it
+but unfortunerly, we don't have rot13 decode command so we use "tr" (translate) instead
++ if you don't know how ROT13 works, you can read this table: 
+
+A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
+| | | | | | | | | | | | | | | | | | | | | | | | | |
+N O P Q R S T U V W X Y Z A B C D E F G H I J K L M
+--> each character in alphabet will shift 13 step (ex: 'A' = 0 -> 'N' = 13) and similar to lowercase
+so we have to translate plain character(A-Z,a-z) to new chatacter according to ROT13 encrypt technique(N-ZA-M,n-za-m) 
+
++ pass: 7x16WNeHIi5YkIhWsfFIqoognUTyj9Q4
+
+level 12: 
++ "ssh bandit12@bandit.labs.overthewire.org -p 2220"
++ In this level, password still in data.txt file but it is a hex dump file now 
+First using mktemp -d to create a temporary working directory ensures safe manipulation of unknown files.
+The provided data.txt is a hex dump, not raw binary. By inspecting the magic bytes (1f 8b), we identify gzip compression.
+The hex dump is converted back to binary using xxd -r.
+The resulting file is recursively analyzed using file, revealing multiple layers of compression: gzip → bzip2 → tar archive.
+Each layer is decompressed using the appropriate tool until the final ASCII text file is obtained
+--> cat it and receive password
+
++ pass: FO5dwFsc0cbaIiH0h8J2eUks2vdTDwAn
+
+level 13: 
++ "ssh bandit13@bandit.labs.overthewire.org -p 2220"
++  This time, we don't have to find the password but we have to using ssh to login bandit14
+First, cat the file sshkey.private and copy all content then logout and add that content to a .key file 
+then because only host(bandit14) can open so we make that file only for host(600)
+Finally using the ssh to login bandit 14
+
+level 14: 
++ In this level we get password by submit the password of current level (bandit13 -> bandit14)
+So just go back to level13 -> level14 and cat the file :  /etc/bandit_pass/bandit14  to get password and then using netcat 
+and get the password
+hint: nc host port
+
+pass: 8xCjnmgoKbGLhHFAZlGE5Tmu4M2tKJQo
+
+level 15:
++ In this level, we need to using the password of bandit14 and connect with localhost and port 30001
+this level have an suggest: Getting “DONE”, “RENEGOTIATING” or “KEYUPDATE”? Read the “CONNECTED COMMANDS” section in the manpage.
+the CONNECT COMMANDS related to s_client command (using man s_client to know) then just connect by using openssl s_client
+and connect with localhost:30001 and paste password from level14 and pass
+hint: openssl s_client -connect IP_host:port
+
++ pass: kSkvUpMQ7lBYyCM4GBPvCvT1BfWRy0Dx
+
+level 16: 
++ Remember the key when using openssl s_client command ? and apply with what you know in level 13 to access to bandit 16
+OK back to this challenge, we have to connect with localhost with port in range 31000 to 32000 and paste the password from 
+previous level to pass 
++ but the previous command openssl s_client can using with 1 port only so wwe have to using nmap to scan what ports are available
+then using openssl s_client and connect with it 
+
+hint: nmap -p <port-range> IP_host, ncat --ssl IP_host:port
+ports: 31790, 31518
+
+level 17:
++ Using RSA code from level 16 to login to bandit 17
++ there are 2 files password.new and password.old, and you have to compare these two file to get password 
+hint : diff file1 file2 
+
+pass: x2gLTTjFwMOhQ8oWNbMN362QKxfRqGlO
+
+level 18: 
++ If you pass level 17 and try to login to bandit18, you will auto logout but 
+the thing is we need to read the readme file to see password so that you can login to bandit18
+and adding "cat readme" command
+
+pass: cGWpMaKXVwDUNgPAVJbWYuGHVn9zl3j8
+
+level 19: 
++ "ssh bandit19@bandit.labs.overthewire.org -p 2220" 
++ While exploring the home directory, we find an interesting file:
+" -rwsr-x--- 1 bandit20 bandit19 14884 Oct 14 09:26 bandit20-do"
+This file is owned by user bandit20 and has an unusual permission: s instead of x in the user execute bit.
+The s indicates the setuid (Set User ID) permission.
+When a binary with setuid is executed, it runs with the privileges of its owner, not the user who launched it.
+So in this case: we need to do something to execute that file although we are bandit 19 user
+
