@@ -1,1 +1,229 @@
 
+# Bandit Write-up (Dịch sang tiếng Việt, giữ nguyên toàn bộ dữ liệu & hint)
+
+## level 0 :
+
++ "ssh bandit0@bandit.labs.overthewire.org -p 2220"
++ cat readme
++ pass: ZjLjTmM6FvvyRnrb2rfNWOZOTa6ip5If
+
+## level 1 :
+
++ "ssh bandit1@bandit.labs.overthewire.org -p 2220"
++ ls -apls
++ cat ./- (- là tên của file)
+
++ pass: 263JGJPfgU6LtdEvgfWU1XP5yac29mFx
+
+## level 2:
+
++ "ssh bandit2@bandit.labs.overthewire.org -p 2220"
++ ls -apls (liệt kê toàn bộ file và thư mục)
++ để mở file có khoảng trắng trong tên thì dùng ký tự "\"
+--> cat ./--spaces\ in\ this\ filename--
+
++ pass: MNk8KNH3Usiio41PRUEoDFPqfxLPlSmx
+
+## level 3:
+
++ "ssh bandit3@bandit.labs.overthewire.org -p 2220"
++ dùng lệnh cd để chuyển vào thư mục "inhere"
++ dùng ls -a để hiển thị file ẩn
++ file chứa mật khẩu là ...Hiding-From-You, chỉ cần cat để xem
+--> cat ./...Hiding-From-You
+
++ pass: 2WmrDFRmJIq3IPxneAaMGhap0pFhF3NJ
+
+## level 4:
+
++ "ssh bandit4@bandit.labs.overthewire.org -p 2220"
++ file chứa mật khẩu nằm trong thư mục inhere nên cd vào inhere
++ sau khi chuyển từ ~ sang inhere thì có 10 file, chỉ có 1 file đọc được và đó là mật khẩu
+--> có thể dùng các cách sau:
+way 1: brute-force bằng cách cat toàn bộ file  
+way 2: dùng find:
+"find -type f | xargs file" hoặc "find . -type f -exec file {} +"  
+
++ pass: 4oQYVPkxZOOEOO5pTW81FB8j8lxXGUQw
+
+## level 5:
+
++ "ssh bandit5@bandit.labs.overthewire.org -p 2220"
++ cần tìm file có các điều kiện:
+human-readable, kích thước 1033 bytes, không executable
++ dùng lệnh find với các điều kiện:
+--> find . -type f ! -executable -readable -size 1033c
++ sau khi tìm được thư mục chứa file thì cat file đó
+
++ pass: HWasnPhtq9AVKe0dmk45nxy20cvUa6EG
+
+## level 6:
+
++ "ssh bandit6@bandit.labs.overthewire.org -p 2220"
++ giống level 5 nhưng điều kiện là:
+- thuộc user bandit7
+- thuộc group bandit6
+- kích thước 33 bytes
+--> dùng lại lệnh level 5 nhưng đổi "." thành "/" (root)
+
++ file chứa mật khẩu: /var/lib/dpkg/info/bandit7.password
++ pass: morbNTDkSW6jIlUc0ymOdMaLnOlFVAaj
+
+## level 7:
+
++ "ssh bandit7@bandit.labs.overthewire.org -p 2220"
++ mật khẩu nằm trong file data.txt, đứng cạnh từ "millionth"
+--> dùng grep:
+==> cat data.txt | grep "millionth"
+
++ pass: dfwvzFQi4mU0wfNbFOe9RoWskMLg7eEc
+
+## level 8:
+
++ "ssh bandit8@bandit.labs.overthewire.org -p 2220"
++ cần in ra dòng chỉ xuất hiện duy nhất 1 lần
+--> sort file rồi dùng uniq:
+==> sort data.txt | uniq -u
+
++ pass: 4CKMh1JI91bUIZZPXDqGanal4xvAg0JM
+
+## level 9:
+
++ "ssh bandit9@bandit.labs.overthewire.org -p 2220"
++ không thể dùng cat vì file là binary
+--> dùng strings rồi grep dòng có dấu "="
+==> strings data.txt | grep =
+
++ pass: FGUW5ilLVJrxX9kMYMmlN4MgbpfMiqey
+
+## level 10:
+
++ "ssh bandit10@bandit.labs.overthewire.org -p 2220"
++ mật khẩu được encode base64
+--> dùng strings rồi decode:
+==> strings data.txt | base64 -d
+
++ pass: dtR173fZKb0RRsDFSGsg2RWnpNVj3qRr
+
+## level 11:
+
++ "ssh bandit11@bandit.labs.overthewire.org -p 2220"
++ mật khẩu bị mã hóa ROT13
++ không có lệnh rot13 nên dùng tr
++ bảng ROT13:
+A-Z -> N-ZA-M  
+a-z -> n-za-m
+
++ pass: 7x16WNeHIi5YkIhWsfFIqoognUTyj9Q4
+
+## level 12:
+
++ "ssh bandit12@bandit.labs.overthewire.org -p 2220"
++ data.txt là hex dump
++ dùng mktemp -d tạo thư mục tạm
++ dùng xxd -r để chuyển về binary
++ dùng file để xác định các lớp nén:
+gzip → bzip2 → tar
++ giải nén từng lớp đến khi ra file text
+--> cat để lấy mật khẩu
+
++ pass: FO5dwFsc0cbaIiH0h8J2eUks2vdTDwAn
+
+## level 13:
+
++ "ssh bandit13@bandit.labs.overthewire.org -p 2220"
++ không cần tìm mật khẩu
++ dùng ssh key để login bandit14
++ cat sshkey.private, copy nội dung
++ lưu vào file .key, chmod 600
++ ssh vào bandit14
+
+## level 14:
+
++ gửi mật khẩu level trước cho bandit14
++ cat /etc/bandit_pass/bandit14
++ dùng netcat
+hint: nc host port
+
++ pass: 8xCjnmgoKbGLhHFAZlGE5Tmu4M2tKJQo
+
+## level 15:
+
++ dùng mật khẩu bandit14
++ connect localhost port 30001
++ dùng openssl s_client
+hint: openssl s_client -connect IP_host:port
+
++ pass: kSkvUpMQ7lBYyCM4GBPvCvT1BfWRy0Dx
+
+## level 16:
+
++ dùng kiến thức ssh key level 13
++ scan port từ 31000-32000
++ dùng nmap để tìm port mở
++ dùng openssl s_client kết nối
+hint: nmap -p <port-range> IP_host
+ports: 31790, 31518
+
+## level 17:
+
++ dùng RSA key level 16
++ so sánh password.new và password.old
+hint: diff file1 file2
+
++ pass: x2gLTTjFwMOhQ8oWNbMN362QKxfRqGlO
+
+## level 18:
+
++ login bandit18 sẽ auto logout
++ cần đọc readme
++ ssh kèm lệnh "cat readme"
+
++ pass: cGWpMaKXVwDUNgPAVJbWYuGHVn9zl3j8
+
+## level 19:
+
++ "ssh bandit19@bandit.labs.overthewire.org -p 2220"
++ file bandit20-do có setuid (s)
++ setuid cho phép chạy file với quyền owner (bandit20)
++ bandit19 có thể thực thi command với quyền bandit20
+
++ pass: 0qXahG8ZjOVMN9Ghs7iOWsCfZyXOUbYO
+
+## level 20:
+
++ "ssh bandit20@bandit.labs.overthewire.org -p 2220"
++ suconnect kết nối TCP tới port chỉ định
++ tạo server bằng netcat:
+nc -l -p port
++ suconnect gửi password bandit20
+
++ pass: EeoULMCra2q0dSkYj561DX7s1CpBuOBt
+
+## level 21:
+
++ "ssh bandit21@bandit.labs.overthewire.org -p 2220"
++ kiểm tra /etc/cron.d/
++ cronjob_bandit22 chạy script
++ script ghi password vào /tmp/t7O6lds9S0RqQh9aMcz6ShpAoZKF7fgv
+
++ pass: tRae0UfB9v0UzbCdn9cY0gQnds9GF58Q
+
+## level 22:
+
++ "ssh bandit22@bandit.labs.overthewire.org -p 2220"
++ cronjob_bandit23
++ script dùng md5(username) làm tên file
++ hash:
+8ca319486bfbbc3663ea0fbe81326349
++ cat /tmp/hash
+
++ pass: 0Zf11ioIjMVN551jX3CmStKLYqjk54Ga
+
+## level 23:
+
++ "ssh bandit23@bandit.labs.overthewire.org -p 2220"
++ cronjob_bandit24
++ script chạy mọi file trong /var/spool/bandit23/foo
++ file do bandit23 sở hữu sẽ được chạy với quyền bandit24
+
