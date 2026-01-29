@@ -3,80 +3,123 @@
 
 ## level 0 :
 
-+ "ssh bandit0@bandit.labs.overthewire.org -p 2220"
-+ cat readme
-+ pass: ZjLjTmM6FvvyRnrb2rfNWOZOTa6ip5If
+```bash
+ssh bandit0@bandit.labs.overthewire.org -p 2220
+```
+- Sử dụng ls để liệt kê các file và thấy một file tên readme và dùng lệnh cat để đọc file đó và lấy pass
 
+```
+ZjLjTmM6FvvyRnrb2rfNWOZOTa6ip5If
+```
+---
 ## level 1 :
 
-+ "ssh bandit1@bandit.labs.overthewire.org -p 2220"
-+ ls -apls
-+ cat ./- (- là tên của file)
+```bash
+ssh bandit1@bandit.labs.overthewire.org -p 2220
+```
 
-+ pass: 263JGJPfgU6LtdEvgfWU1XP5yac29mFx
+Sử dụng **ls -apls** để dò các file và có một file tên là '-', dùng lệnh cat để cat file đấy và ra được pass
 
+```
+263JGJPfgU6LtdEvgfWU1XP5yac29mFx
+```
+---
 ## level 2:
 
-+ "ssh bandit2@bandit.labs.overthewire.org -p 2220"
-+ ls -apls (liệt kê toàn bộ file và thư mục)
-+ để mở file có khoảng trắng trong tên thì dùng ký tự "\"
---> cat ./--spaces\ in\ this\ filename--
+```bash
+ssh bandit2@bandit.labs.overthewire.org -p 2220
+```
+- Tiếp tục dùng **ls -apls** để liệt kê toàn bộ file và thư mục và thấy một file có tên là "--spaces in this filename--"
+- Để mở file có khoảng trắng trong tên thì dùng ký tự "\"
 
-+ pass: MNk8KNH3Usiio41PRUEoDFPqfxLPlSmx
-
+```
+cat ./--spaces\ in\ this\ filename--
+```
+Và ra pass
+```
+MNk8KNH3Usiio41PRUEoDFPqfxLPlSmx
+```
+---
 ## level 3:
 
-+ "ssh bandit3@bandit.labs.overthewire.org -p 2220"
-+ dùng lệnh cd để chuyển vào thư mục "inhere"
-+ dùng ls -a để hiển thị file ẩn
-+ file chứa mật khẩu là ...Hiding-From-You, chỉ cần cat để xem
---> cat ./...Hiding-From-You
-
-+ pass: 2WmrDFRmJIq3IPxneAaMGhap0pFhF3NJ
+```bash
+ssh bandit3@bandit.labs.overthewire.org -p 2220
+```
+- Sử dùng lệnh **ls -apls** ra được một thư mục có tên là "inhere". Tiếp theo sử dụng cd để chuyển vào thư mục "inhere" tiếp theo ls -a thì ra file chứa mật khẩu là ...Hiding-From-You, chỉ cần cat để xem
+```bash
+cat ./...Hiding-From-You
+```
+Và ra được pass:
+```
+2WmrDFRmJIq3IPxneAaMGhap0pFhF3NJ
+```
 
 ## level 4:
 
-+ "ssh bandit4@bandit.labs.overthewire.org -p 2220"
-+ file chứa mật khẩu nằm trong thư mục inhere nên cd vào inhere
-+ sau khi chuyển từ ~ sang inhere thì có 10 file, chỉ có 1 file đọc được và đó là mật khẩu
---> có thể dùng các cách sau:
-way 1: brute-force bằng cách cat toàn bộ file  
-way 2: dùng find:
-"find -type f | xargs file" hoặc "find . -type f -exec file {} +"  
+```bash
+ssh bandit4@bandit.labs.overthewire.org -p 2220"
+```
 
-+ pass: 4oQYVPkxZOOEOO5pTW81FB8j8lxXGUQw
-
+- File chứa mật khẩu nằm trong thư mục inhere nên cd vào inhere.
+- Sau khi chuyển từ ~ sang inhere thì có 10 file, chỉ có 1 file đọc được và đó là mật khẩu
+- Các cách có thể dùng:
++ way 1: brute-force bằng cách cat toàn bộ file  
++ way 2: dùng find:
+```bash
+find -type f | xargs file
+# hoặc
+find . -type f -exec file {} +
+```
+- Cuối cùng thì chỉ cần vào file đó và cat là ra được pass
+```
+4oQYVPkxZOOEOO5pTW81FB8j8lxXGUQw
+```
 ## level 5:
 
-+ "ssh bandit5@bandit.labs.overthewire.org -p 2220"
-+ cần tìm file có các điều kiện:
-human-readable, kích thước 1033 bytes, không executable
-+ dùng lệnh find với các điều kiện:
---> find . -type f ! -executable -readable -size 1033c
-+ sau khi tìm được thư mục chứa file thì cat file đó
-
-+ pass: HWasnPhtq9AVKe0dmk45nxy20cvUa6EG
-
+```bash
+ssh bandit5@bandit.labs.overthewire.org -p 2220
+```
+Nhiệm vụ: Cần tìm file có các điều kiện: human-readable, kích thước 1033 bytes, không executable.
+- Dùng lệnh find với các điều kiện:
+```
+find . -type f ! -executable -readable -size 1033c
+```
+- Sau khi tìm được thư mục chứa file thì cat file đó
+```
+HWasnPhtq9AVKe0dmk45nxy20cvUa6EG
+```
 ## level 6:
-
-+ "ssh bandit6@bandit.labs.overthewire.org -p 2220"
-+ giống level 5 nhưng điều kiện là:
+```bash
+ssh bandit6@bandit.labs.overthewire.org -p 2220
+```
+Giống level 5 nhưng điều kiện là:
 - thuộc user bandit7
 - thuộc group bandit6
 - kích thước 33 bytes
---> dùng lại lệnh level 5 nhưng đổi "." thành "/" (root)
+  
+-> dùng lại lệnh level 5 nhưng đổi "." thành "/" (root)
 
 + file chứa mật khẩu: /var/lib/dpkg/info/bandit7.password
-+ pass: morbNTDkSW6jIlUc0ymOdMaLnOlFVAaj
+
+cat file đó và ra được pass
+```
+morbNTDkSW6jIlUc0ymOdMaLnOlFVAaj
+```
 
 ## level 7:
-
-+ "ssh bandit7@bandit.labs.overthewire.org -p 2220"
-+ mật khẩu nằm trong file data.txt, đứng cạnh từ "millionth"
---> dùng grep:
-==> cat data.txt | grep "millionth"
-
-+ pass: dfwvzFQi4mU0wfNbFOe9RoWskMLg7eEc
+```bash
+ssh bandit7@bandit.labs.overthewire.org -p 2220
+```
+- Mật khẩu nằm trong file data.txt, đứng cạnh từ "millionth"
+- 
+--> dùng grep
+```bash
+  cat data.txt | grep "millionth"
+```
+Pass:
+```
+dfwvzFQi4mU0wfNbFOe9RoWskMLg7eEc
+```
 
 ## level 8:
 
@@ -211,8 +254,14 @@ nc -l -p port
 
 ## level 22:
 
-+ "ssh bandit22@bandit.labs.overthewire.org -p 2220"
-+ cronjob_bandit23
+```bash
+ssh bandit22@bandit.labs.overthewire.org -p 2220
+```
+- Sử dụng trick cũ của bandit21 vào file **/etc/cron.d**
+- cat file **cronjob_bandit23** thì ra được đoạn mã bash như này:
+```bash
+
+```
 + script dùng md5(username) làm tên file
 + hash:
 8ca319486bfbbc3663ea0fbe81326349
